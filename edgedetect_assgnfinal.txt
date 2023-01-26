@@ -1,0 +1,48 @@
+
+from helper_functions import *
+
+#-----------------------FILL IN THE FOLDER WHERE YOUR IMAGE EXISTS--------------------------
+datalocation = "Enter path of images"
+
+imgloc = datalocation + "1.jpg" 
+#----------------------------------------STARTER CODE----------------------------------------
+# Convert the color image to grayscale and returns the grayscale pixels 
+pxl_val = read_colorimg(imgloc)
+# The returned pixel values INCLUDE 2 boundary rows and 2 boundary colns. Therefore,
+numberofrows = len(pxl_val) - 2
+numberofcolumns = len(pxl_val[1]) - 2
+#
+#----------------------------------------WRITE YOUR CODE HERE----------------------------------------
+# Create a data structure to store updated pixel information
+new_pxl_val = [[1 for a in range(numberofcolumns)] for b in range(numberofrows)]
+# Define the 3 x 3 mask as a tuple of tuples
+mask = ((-2,0,2),(-1,0,1),(-2,0,2))
+
+# Implement a function to slice a part from the image as a 2D list
+def get_slice_2d_list(clr_pxl,x_axis,y_axis):
+    return [fun[y_axis-1:y_axis+2] for fun in clr_pxl[x_axis-1:x_axis+2]]
+
+# Implement a function to flatten a 2D list or a 2D tuple
+def flatten(flat_list):
+    return [b for items in flat_list for b in items]
+
+# for each of the pixel values, excluding the boundary values
+    # Create little local 3x3 box using list slicing
+
+for rows in range(1,numberofrows+1):
+    for columns in range(1,numberofcolumns+1):
+        neighbour_pxl = get_slice_2d_list(pxl_val,rows,columns)
+        flatten_pxl=flatten(neighbour_pxl)
+        flatten_mask=flatten(mask)
+        mult_result=list( map(lambda x, y: x * y, flatten_pxl, flatten_mask))
+        updated=0
+        for i in range(0,len(mult_result)):
+            updated=updated+mult_result[i]
+            new_pxl_val[rows-1][columns-1]=updated
+    # Sum all the multiplied values and set the new pixel value
+#        
+#----------------------------------------END YOUR CODE HERE----------------------------------------
+# Verify your result
+verify_result(pxl_val, new_pxl_val, mask)
+# View the original image and the edges of the image
+view_images(imgloc, new_pxl_val)
